@@ -121,10 +121,13 @@ func (c whoisClient) request(ctx context.Context, domain, host string) (string, 
 	normalizedDomain := strings.ToLower(domain)
 
 	normalizedDomain, err := idna.ToASCII(normalizedDomain)
+
 	if err != nil {
 		return "", fmt.Errorf("failed to normalize domain name: %w", err)
 	}
-
+        if host == "" && strings.HasSuffix(normalizedDomain, ".spb.ru") {
+            host = "whois.nic.ru"
+        }
 	req := &whois.Request{
 		Query: normalizedDomain,
 		Host:  host,
